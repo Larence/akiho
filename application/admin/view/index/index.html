@@ -1,0 +1,33 @@
+{extend name="layout/base" /}
+{block name="title"}后台首页{/block}
+{block name="main"}
+<!--<div class="container">-->
+    <table class="table table-bordered">
+    <caption style="text-align: center">企业列表</caption>
+    <thead>
+        <tr>
+            <th>编号</th>
+            <th>用户名</th>
+            <th>联系电话</th>
+            <th>邮箱</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if(!empty($data)):?>
+            <?php foreach($data as $vt): ?>
+                <tr>
+                    <td>{$vt['id']}</td>
+                    <td><a target="_blank" href="/m_login?id={$vt['id']}&token=<?php echo md5('UJHL45TGNKS452GHASLHF8'.'_'.$vt['id'].'_'.session('mid')) ;?>">{$vt['name']}</a></td>
+                    <td>{$vt['tel']}</td>
+                    <td>{$vt['email']}</td>
+                    <td>{$vt['create_time']|date="Y-m-d H:i:s",###}</td>
+                    <td><a href="auths?id={$vt['id']}" class="btn btn-sm btn-success">权限</a></td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif;?>
+    </tbody>
+</table>
+<!--</div>-->
+{/block}

@@ -1,0 +1,100 @@
+{extend name="layout/base" /}
+{block name="title"}基本资料{/block}
+{block name='crumb'} <li class="active">修改密码</li>{/block}
+{block name="main"}
+<form class="form-horizontal" name="formid" action="/admin/resume/pwd" method="post" style="margin-top: 50px" onsubmit="return sub()" >
+    <div class="container">
+        <div class="row form-group">
+            <label class="control-label col-lg-1" for="old_pwd">当前密码：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="old_pwd" required id="old_pwd" value="" type="text">
+            </div>
+            <label class="control-label col-lg-2" id="old_error_tips" style="text-align: left;color: #FF5722;display: none">原密码不能为空</label>
+        </div>
+
+        <div class="row form-group">
+            <label class="control-label col-lg-1">新密码：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="new_pwd" id="new_pwd" placeholder="至少6个至多20个字符" value="" type="text">
+            </div>
+            <label class="control-label col-lg-2" id="error_tips" style="text-align: left;color: #FF5722;display: none">密码格式不对</label>
+        </div>
+
+        <div class="row form-group">
+            <label class="control-label col-lg-1">确认密码：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="re_pwd" required id="re_pwd" value="" type="text">
+            </div>
+            <label class="control-label col-lg-2" id="re_error_tips" style="text-align: left;color: #FF5722;display: none">两次密码不同</label>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-lg-6 col-md-6">
+                <input type="submit" class="btn btn-primary btn_updata" style="float: right" value="确认">
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="script"}
+
+<script type="text/javascript">
+    var old_status = 0;
+    var new_status = 0;
+    var re_status = 0;
+    <!--input失去焦点事件-->
+    $('#old_pwd').blur(function () {
+        var old = $.trim($(this).val());
+        if (old.length==0){
+            old_status = 0;
+            $(this).css("border-color","#FF5722");
+            $('#old_error_tips').css('display','block');
+        }else {
+            old_status = 1;
+            $(this).css("border-color","#ccc");
+            $('#old_error_tips').css('display','none');
+        }
+
+    });
+
+
+    $('#new_pwd').blur(function () {
+        var pwd = $(this).val();
+        var reg2 = /^[a-zA-Z0-9\_\-\.\!\*]{6,20}$/;
+        if (!reg2.test(pwd)){
+            new_status = 0;
+            $(this).css("border-color","#FF5722");
+            $('#error_tips').css('display','block');
+        }else {
+            new_status = 1;
+            $(this).css("border-color","#ccc");
+            $('#error_tips').css('display','none');
+        }
+    });
+
+
+    $('#re_pwd').blur(function () {
+        var pwd = $('#new_pwd').val();
+        var re_pwd = $(this).val();
+        if (pwd !==re_pwd){
+            re_status = 0;
+            $(this).css("border-color","#FF5722");
+            $('#re_error_tips').css('display','block');
+        }else{
+            re_status = 1;
+            $(this).css("border-color","#ccc");
+            $('#re_error_tips').css('display','none');
+        }
+    })
+
+
+    function sub() {
+        if (old_status!=1 || new_status!=1 || re_status!=1){
+            return false;
+        }
+    }
+
+
+</script>
+
+{/block}

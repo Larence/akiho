@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="__STATIC__/layui/css/layui.css"  media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<style type="text/css">
+    .layui-admin-card-header{
+        padding: 15px;
+    }
+    .layui-upload-img {
+        width: 92px;
+        height: 92px;
+        margin: 0 10px 10px 0;
+    }
+</style>
+
+<body class="layui-layout-body">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-form layui-card-header layui-admin-card-header">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>网站设置</legend>
+                </fieldset>
+            </div>
+
+
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md3">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>网站logo：</legend>
+                            </fieldset>
+
+                            <div class="layui-upload" style="width: 92px;margin: 0 auto;">
+                                <button type="button" class="layui-btn test1"  file_name = 'logo'>上传图片</button>
+                                <div class="layui-upload-list">
+                                    <img class="layui-upload-img" id="logo" <?php if($logo){echo "src='/static".$logo."'";}?>>
+                                    <p class="demoText_logo"></p>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="layui-col-md3">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>官方微博：</legend>
+                            </fieldset>
+                            <div class="layui-upload" style="width: 92px;margin: 0 auto;">
+                                <button type="button" class="layui-btn test1"  file_name = 'weibo'>上传图片</button>
+                                <div class="layui-upload-list">
+                                    <img class="layui-upload-img" id="weibo" <?php if($logo){echo "src='/static".$weibo."'";}?>">
+                                    <p id="demoText_weibo"></p>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="layui-col-md3">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>官方微信：</legend>
+                            </fieldset>
+                            <div class="layui-upload" style="width: 92px;margin: 0 auto;">
+                                <button type="button" class="layui-btn test1"  file_name = 'wechat'>上传图片</button>
+                                <div class="layui-upload-list">
+                                    <img class="layui-upload-img" id="wechat" <?php if($logo){echo "src='/static".$wechat."'";}?>>
+                                    <p class="demoText_wechat"></p>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="layui-col-md3">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>淘宝店铺：</legend>
+                            </fieldset>
+                            <div class="layui-upload" style="width: 92px;margin: 0 auto;">
+                                <button type="button" class="layui-btn test1"  file_name = 'taobao'>上传图片</button>
+                                <div class="layui-upload-list">
+                                    <img class="layui-upload-img" id="taobao" <?php if($logo){echo "src='/static".$taobao."'";}?>>
+                                    <p class="demoText_taobao"></p>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-row layui-col-space15">
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                            <legend>首页轮播图：</legend>
+                        </fieldset>
+                        <div class="layui-upload">
+                            <button type="button" class="layui-btn" id="test2">多图片上传</button>
+                            <button type="button" class="layui-btn" id="clear_pic">清空图片</button>
+                            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                                预览图：
+                                <div class="layui-upload-list" id="banner" style="height: 100px">
+                                    <?php if(!empty($banners)){ ?>
+                                        <?php foreach($banners as $vt){ ?>
+                                            <img src="__STATIC__{$vt}"  class="layui-upload-img">
+                                        <?php }?>
+                                    <?php } ?>
+                                </div>
+                            </blockquote>
+                        </div>
+                </div>
+
+        </div>
+    </div>
+
+
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+<script src="__STATIC__/layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use('upload', function(){
+        var $ = layui.jquery
+            ,upload = layui.upload;
+
+        //普通单张图片上传
+        var uploadInst = upload.render({
+            elem: '.test1',
+            url: '/upload/uni_pic',
+            before: function(obj){
+                var filename = this.item.attr('file_name');
+                this.data.file_name =  filename; // 动态传参数
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#'+filename).attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code ==200){
+                    var filename = this.item.attr('file_name');
+                    $('#'+filename).attr('src','__STATIC__'+res.src);
+                    layer.msg('上传成功', {icon: 1})
+                }else{
+                    layer.msg('上传失败', {icon: 2})
+                }
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var filename = this.item.attr('file_name');
+                var demoText = $('#demoText_'+filename);
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        //多图片上传
+        upload.render({
+            elem: '#test2',
+            url: '/upload/multi_pic',
+            multiple: true,
+            before: function(obj){
+                //预读本地文件示例，不支持ie8
+                // obj.preview(function(index, file, result){
+                //     $('#banner').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+                // });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code ==200){
+                    var src = '__STATIC__'+res.src;
+                    $('#banner').append('<img src="'+ src +'"  class="layui-upload-img">')
+                }else{
+                    layer.msg('上传失败', {icon: 2})
+                }
+            }
+        });
+
+
+
+        $('#clear_pic').on('click',function () {
+            parent.layer.confirm('真的清空吗？', function(index){
+                $.ajax({
+                    url:"/upload/clear_multi",
+                    type:'post',
+                    dataType:'json',
+                    data:{types:'del'},//清空图片
+                    success:function(res){
+                        parent.layer.close(index);
+                        if (res==200){
+                            $('#banner').empty();
+                        }else {
+                            parent.layer.alert('操作失败！！！',{icon:5});
+                        }
+                    },
+                    error:function(){
+                        layer.alert('操作失败！！！',{icon:5});
+                    }
+                });
+
+            })
+
+        })
+
+
+    });
+
+
+</script>
+
+</body>
+</html>

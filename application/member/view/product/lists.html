@@ -1,0 +1,180 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>商品列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="__STATIC__/layui/css/layui.css" />
+</head>
+<body>
+<style>
+    .product-list {
+        width: 1200px;
+        margin: 30px auto;
+    }
+    .list-cont .item-box {
+        width: 1220px;
+        padding-bottom: 30px;
+    }
+    .list-cont .item {
+        width: 230px;
+        height: 350px;
+        float: left;
+        margin: 0 12px 20px 0;
+        text-align: left;
+        background: #fff;
+    }
+    .list-cont .item img{
+        width: 230px;
+        height: 220px;
+    }
+    .list-cont .item .text-box {
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    .list-cont .item .text-box .title {
+        line-height: 24px;
+        font-size: 14px;
+        color: #666666;
+        margin-bottom: 6px;
+        text-align: center;
+    }
+
+    .list-cont .item .text-box .plic {
+        position: relative;
+        margin-top: 10px;
+    }
+
+    .list-cont .item .text-box .plic .ciur-pic {
+        font-size: 16px;
+        margin-right: 24px;
+    }
+    .product-delete{
+        margin-left: 40px;
+    }
+    .list-cont .item .text-box .plic .Ori-pic {
+        color: #666666;
+        margin-right: 10px;
+
+    }
+    .Ori-pic i{
+        font-size: 22px;
+    }
+
+</style>
+    <div class="product-list-box">
+    <div class="product-list">
+        <div class="list-cont" cont="tuangou">
+            <div class="item-box layui-clear">
+                <?php if(!empty($data)){ foreach($data as $vt){?>
+                    <div class="item">
+                        <img src="__STATIC__{$vt['pic']}" data-id="{$vt['id']}">
+                        <div class="text-box">
+                            <p class="title">{$vt['name']}</p>
+                            <p class="plic">
+                                <span class="ciur-pic">￥{$vt['price']}</span>
+                                <span class="Ori-pic product-delete" data-id="{$vt['id']}" data-title="{$vt['name']}" title="删除">
+                                    <i class="layui-icon layui-icon-delete"></i>
+                                </span>
+                                <span class="Ori-pic product-edit" data-id="{$vt['id']}" data-title="{$vt['name']}" title="编辑">
+                                    <i class="layui-icon layui-icon-edit"></i>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                <?php }}?>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="__STATIC__/layui/layui.js"></script>
+<script>
+    layui.use(['element','layer','table'], function(){
+        var $ = layui.jquery;
+            element = layui.element,
+            layer = layui.layer,
+            table = layui.table;
+
+        //重置当前页面高度
+        var height = $('.layui-fluid').height();
+        var heights = $(window.parent.document).find(".layui-side").height();
+        if (height < heights){
+            height = heights;
+        }
+        // $(window.parent.document).find('.layui-show').find('iframe')[0].height=3600;
+
+
+        // 编辑
+        $('.product-edit').click(function () {
+            var id = $(this).attr('data-id');
+            var url = "/product/index";
+            var title = $(this).attr('data-title')+"-产品编辑";
+            edit(title,url,id);
+        })
+        function edit(title,url,id){
+            var  flag = true;
+            var urls = url+"?id="+id;
+            $(window.parent.document).find(".layui-tab-title li").each(function(i,e){
+                if($(this).attr("lay-id")==urls){
+                    //切换选项卡
+                    parent.layui.element.tabChange('pagetabs', urls);
+                    flag = false;
+                }
+            })
+            if(flag){
+                //新增选项卡
+                parent.layui.element.tabAdd('pagetabs', {
+                    title: title
+                    ,content: '<iframe src="'+urls+'" class="layui-admin-iframe" scrolling="no" frameborder="0"></iframe>'
+                    ,id: urls
+                });
+                //切换选项卡
+                parent.layui.element.tabChange('pagetabs', urls);
+            }
+
+        }
+        // 产品删除
+        $('.product-delete').click(function () {
+            var id = $(this).attr('data-id');
+            parent.layer.confirm('真的删除行么', function(index){
+                $.ajax({
+                    url:"/product/delete",
+                    type:'post',
+                    dataType:'json',
+                    data:{id:id},
+                    success:function(res){
+                        if (res==200){
+                            parent.layer.close(index);
+                            $(window.parent.document).find('.layui-show').find('iframe')[0].contentWindow.location.reload(true);
+                        }else {
+                            parent.layer.msg('操作失败！！！',{icon:5});
+                        }
+                    },
+                    error:function(){
+                        parent.layer.msg('操作失败！！！',{icon:5});
+                    }
+                });
+
+            });
+        })
+
+        // 查看详情
+        $('.item img').click(function () {
+            var id = $(this).attr('data-id');
+            parent.layer.open({
+                //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                type: 2,
+                title: '产品详情',
+                area: ['100%', '100%'],
+                content: "/product/detail?id="+id,
+            });
+        })
+
+
+
+    });
+</script>
+

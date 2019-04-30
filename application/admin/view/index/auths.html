@@ -1,0 +1,111 @@
+{extend name="layout/base" /}
+{block name="title"}权限{/block}
+{block name='crumb'} <li class="active">权限</li>{/block}
+{block name="main"}
+<?php $country = config('country.countries');?>
+<!--<div class="container">-->
+
+    <form class="form-horizontal" action="add" method="post">
+            <div style="padding: 20px 0">
+                <h3>域名添加</h3>
+            </div>
+            <div class="row form-group">
+                <input type="hidden" name="id" value="{$_GET['id']}">
+                <label class="control-label col-lg-1">域名</label>
+                <div class="col-lg-5 col-md-6">
+                    <input class="form-control" name="domain" id="domain" type="text" required>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="control-label col-lg-1">语言</label>
+                <div class="col-lg-5 col-md-6">
+                    <select class="form-control"  name="lang">
+                        <option value="cn">中文</option>
+                        <option value="en">英文</option>
+                        <option value="es">西班牙语</option>
+                        <option value="py">葡萄牙语</option>
+                        <option value="ru">俄语</option>
+                        <option value="fr">法语</option>
+                        <option value="ja">日语</option>
+                        <option value="ko">韩语</option>
+                        <option value="de">德语</option>
+                    </select>
+                </div>
+            </div>
+        <input type="submit" class="btn btn-primary" value="添加">
+    </form>
+
+
+
+
+    <table class="table table-bordered">
+        <caption style="text-align: center;font-size: 18px">公司列表</caption>
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>域名</th>
+            <th>语言</th>
+            <th>添加时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php if(!empty($data)):?>
+            <?php foreach($data as $vt): ?>
+                <tr>
+                    <td>{$vt['id']}</td>
+                    <td>{$vt['domain']}</td>
+                    <td><?php echo $country[$vt['lang']];?></td>
+                    <td>{$vt['create_time']|date="Y-m-d H:i:s",###}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm" onclick="values('{$vt[\'id\']}','{$vt[\'domain\']}','{$vt[\'lang\']}')">语言设置</button>
+                        <a href="delete?id={$vt['id']}" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif;?>
+        </tbody>
+    </table>
+
+    <!--模态框-->
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="height: auto">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <form action="/admin/set_lang" method="post">
+                <div class="modal-body">
+                        <input type="hidden" name="host_id" id="host_id" value="">
+                        <select class="form-control" id="sel_lang" name="host_lang">
+                            <option value="cn">中文</option>
+                            <option value="en">英文</option>
+                            <option value="es">西班牙语</option>
+                            <option value="py">葡萄牙语</option>
+                            <option value="ru">俄语</option>
+                            <option value="fr">法语</option>
+                            <option value="ja">日语</option>
+                            <option value="ko">韩语</option>
+                            <option value="de">德语</option>
+                        </select>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">确定</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<!--</div>-->
+
+<script type="text/javascript">
+    function  values(id,domain,lang) {
+        $('#host_id').val(id);
+        $('#myModalLabel').text(domain+'语言设置');
+        $("#sel_lang").val(lang);
+    }
+</script>
+{/block}

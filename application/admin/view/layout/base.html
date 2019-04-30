@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{block name="title"}易家科技{/block}</title>
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/bootstrap/css/bootstrap.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="__STATIC__/bootstrap/js/bootstrap.js"></script>
+    <style type="text/css">
+        html,body{
+            height:100%;
+            min-height:100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+            min-width: 1200px;
+            padding: 0px;
+            margin: 0px;
+            position: relative;
+        }
+        .navbar{
+            position: absolute;
+            background: #4d5b76;
+            margin-bottom: 0px;
+            width: 100%;
+            top: 0px;
+            border: 0px;
+            border-radius: 0px;
+            z-index: 1011;
+        }
+        .navbar-middle{
+            padding-top: 50px;
+            width: 100%;
+            height: 100%;
+        }
+        .left_nav{
+            background:#4d5b76;
+            width: 240px;
+            height: 100%;
+        }
+        .left_nav ul a{
+            color: #fff;
+        }
+        .left_nav, .right_nav{
+            float: left;
+        }
+        .nav-tabs {
+            border:0px;
+        }
+        .nav-tabs > li > a {
+            border-radius: 0px;
+            border: 0;
+        }
+        .nav-tabs > li > a:hover{
+            background: darkgray;
+
+        }
+        .nav-tabs > li > a:focus{
+            background: darkgray;
+        }
+        .right_nav{
+            max-height: 100%;
+            overflow-y: auto;
+            width: calc(100% - 240px) ;
+            width: -webkit-calc(100% - 240px) ;
+            width: -moz-calc(100% - 240px) ;
+            padding: 20px;
+        }
+    </style>
+    {block name="css"}{/block}
+</head>
+
+<body class="">
+<?php
+$users = session('manage_user');
+?>
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <span style="line-height: 50px; color: #fff;font-size: 20px">易家科技</span>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="full_right dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="color: #fff;background: #4d5b76"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;{$users['name']} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/admin/resume/index">基本资料</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/admin/resume/pwd">修改密码</a></li>
+                        </ul>
+                    </li>
+                    <li><a class="full_right" href="/admin/resume/logout" style="color: #fff;">退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="navbar-middle">
+        <div class="left_nav">
+            <ul id="main-nav" class="nav nav-tabs nav-stacked" style="">
+                <li>
+                    <a href="/admin/index">
+                        <i class="glyphicon glyphicon-th-large"></i> 首页
+                    </a>
+                </li>
+                <li>
+                    <a href="#systemSetting" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="glyphicon glyphicon-cog"></i>
+                        用户管理
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul id="systemSetting" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        <li><a href="/admin/member/index"><i class="glyphicon glyphicon-user"></i>用户管理</a></li>
+                        <li><a href="/admin/member/add"><i class="glyphicon glyphicon-th-list"></i>添加用户</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#systemSetting_base" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="glyphicon glyphicon-credit-card"></i>
+                        基本资料
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul id="systemSetting_base" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        <li><a href="/admin/resume/index"><i class="glyphicon glyphicon-asterisk"></i>基本资料</a></li>
+                        <li><a href="/admin/resume/pwd"><i class="glyphicon glyphicon-edit"></i>修改密码</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="right_nav">
+            <ul class="breadcrumb">
+                <li><a href="/admin/index">首页</a></li>
+                {block name='crumb'}{/block}
+            </ul>
+            {block name="main"}{/block}
+        </div>
+    </div>
+</div>
+{block name="script"}{/block}
+</body>
+</html>
+
+

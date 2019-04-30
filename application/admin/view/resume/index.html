@@ -1,0 +1,102 @@
+{extend name="layout/base" /}
+{block name="title"}基本资料{/block}
+{block name='crumb'} <li class="active">基本资料</li>{/block}
+{block name='css'}
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css" />
+{/block}
+{block name="main"}
+<form class="form-horizontal" name="formid" action="/admin/resume/edit" method="post" style="margin-top: 50px" onsubmit="return check()" >
+    <div class="container">
+        <div class="row form-group">
+            <label class="control-label col-lg-1" for="name">用户名：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="name" required id="name" value="{$name}" type="text">
+            </div>
+        </div>
+
+        <input type="hidden" name="pic" id="pic" value="{$pic}">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="font-weight: bold;">  头像：</label>
+            <div class="layui-input-block">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn" id="head_pic" >选择图片</button>
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="head_upload_img" width="92" height="92" <?php if($pic){echo "src='/static".$pic."'";}?>>
+                        <p class="demoText_logo"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <label class="control-label col-lg-1">邮箱：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="email" readonly id="email" value="{$email}" type="email">
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <label class="control-label col-lg-1">电话：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="tel" required id="tel" value="{$tel}" type="tel">
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-lg-6 col-md-6">
+                <input type="submit" class="btn btn-primary" style="float: right" value="确认">
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="script"}
+<script src="__STATIC__/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['element','upload','layer','table','form'],function() {
+        var element = layui.element
+            ,layer = layui.layer
+            ,table = layui.table
+            ,form = layui.form
+            ,$ = layui.jquery
+            ,upload = layui.upload;
+
+        //普通单张图片上传
+        upload.render({
+            elem: '#head_pic',
+            url: '/upload/share_pic',
+            data:{'file_name':'head'},
+            before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#head_upload_img').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code == 200) {
+                    $('#head_upload_img').attr('src','__STATIC__'+res.src);
+                    $("#pic").val(res.src);
+                    layer.msg('上传成功', {icon: 1})
+                } else {
+                    layer.msg('上传失败', {icon: 2})
+                }
+            }
+
+        });
+
+
+
+    })
+
+    function check() {
+        var tel = $("#tel").val();
+        var reg1 = /^1[34578]\d{9}$/;
+        if (!reg1.test(tel)){
+            alert('手机号格式错误');
+            return false;
+        }
+    }
+</script>
+{/block}
+

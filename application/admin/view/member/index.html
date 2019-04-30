@@ -1,0 +1,100 @@
+{extend name="layout/base" /}
+{block name="title"}权限{/block}
+{block name='crumb'} <li class="active">用户管理</li>{/block}
+{block name="css"}
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css" />
+<style>
+    .layui-table-cell {
+        height: 92px;
+    }
+</style>
+{/block}
+{block name="main"}
+<div>
+    <table id="user_datatable" lay-filter="user"></table>
+    <script type="text/html" id="switchTpl">
+        <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="is_status" {{ d.status == 1 ? '':'checked'}}>
+    </script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" href="javascript:;" lay-event="edit">编辑</a>
+    </script>
+</div>
+{/block}
+{block name="script"}
+<script src="__STATIC__/layui/layui.js"></script>
+<script>
+    layui.use(['element','layer','table','form'],function() {
+            var element = layui.element
+                ,layer = layui.layer
+                ,table = layui.table
+                ,form = layui.form
+                ,$ = layui.jquery;
+
+        // table
+        table.render({
+            elem: '#user_datatable'
+            // ,height: 450
+            ,method:'post'
+            ,url: '/admin/member/index' //数据接口
+            ,loading:true
+            ,page: true //开启分页
+            ,cols: [[
+                {field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true, totalRowText: '合计'}
+                ,{field:'name', title:'用户名', width:120, edit: 'text'}
+
+                ,{field:'pic', title:'头像',height:92,templet:function (res) {
+                        return "<img class='layui-upload-img' style='height:92px' src='__STATIC__"+res.pic+"' >";
+                    }}
+                ,{field:'email', title:'邮箱', width:150}
+                ,{field:'tel', title:'联系电话', width:150}
+                ,{field:'status', title:'是否封号',templet: '#switchTpl', unresize: true}
+                ,{field:'create_time', title:'加入时间', width:250}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:200}
+            ]]
+        });
+
+
+        //监听封号操作
+        form.on('switch(is_status)', function(obj){
+            var is_status = obj.elem.checked;
+            if (is_status){
+                is_status = '-1';
+            }else {
+                is_status = '1';
+            }
+            var id = this.value;
+            $.ajax({
+                url:"/admin/member/is_status",
+                type:'post',
+                dataType:'json',
+                data:{id:id,status:is_status},//表格数据序列化
+                success:function(res){
+                    if (res=='200'){
+                        layer.tips('修改成功', obj.othis);
+                    }else {
+                        layer.tips('修改失败', obj.othis);
+                    }
+                },
+                error:function(){
+                    layer.tips('修改失败', obj.othis);
+                }
+            });
+        });
+
+        //监听工具条
+        table.on('tool(user)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'edit'){ //编辑
+                var id = data.id;
+                window.location.href="/admin/member/add?id="+id;
+            }
+        });
+
+
+
+
+
+    })
+</script>
+{/block}

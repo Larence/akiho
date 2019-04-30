@@ -1,0 +1,79 @@
+{extend name="layout/base" /}
+{block name="title"}添加用户{/block}
+{block name='crumb'} <li class="active">添加用户</li>{/block}
+{block name="main"}
+<form class="form-horizontal" name="formid" action="/admin/member/add" method="post" style="margin-top: 50px" onsubmit="return check()" >
+    <div class="container">
+        <div class="row form-group">
+            <label class="control-label col-lg-1" for="name">用户名：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="name" required id="name" type="text" value="<?php if($data){echo $data[0]['name'];}?>">
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="control-label col-lg-1">邮箱：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="email" required id="email" type="email" value="<?php if($data){echo $data[0]['email'];}?>">
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <label class="control-label col-lg-1">电话：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="tel" required id="tel" type="tel" value="<?php if($data){echo $data[0]['tel'];}?>">
+            </div>
+        </div>
+        <?php if(!$data){ ?>
+        <div class="row form-group">
+            <label class="control-label col-lg-1">用户类型：</label>
+            <div class="col-lg-5 col-md-6">
+                <select class="form-control" required name="types" id="types">
+                    <option ></option>
+                    <option value="1">管理员</option>
+                    <option value="2">普通用户</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <label class="control-label col-lg-1">密码：</label>
+            <div class="col-lg-5 col-md-6">
+                <input class="form-control" name="password" required id="pwd" type="text" placeholder="密码至少6位至多20位">
+            </div>
+        </div>
+        <?php }else{?>
+            <input class="form-control" name="id" required  type="hidden" value="<?php if($data){echo $data[0]['id'];} ?>">
+        <?php }?>
+        <div class="row form-group">
+            <div class="col-lg-6 col-md-6">
+           <input type="submit" class="btn btn-primary" style="float: right" value="确认">
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    function check() {
+        var email = $('#email').val();
+        var reg = /^[a-zA-Z0-9\_\-\.]+@([a-zA-Z0-9\_\-]+)(\.[a-zA-Z0-9\_\-]+)$/;
+        if (!reg.test(email)){
+            alert('邮箱格式不正确');
+            return false;
+        }
+        var tel = $("#tel").val();
+        var reg1 = /^1[34578]\d{9}$/;
+        if (!reg1.test(tel)){
+            alert('手机号格式错误');
+            return false;
+        }
+        var pwd = $('#pwd').val();
+        var reg2 = /^[a-zA-Z0-9\_\-\.\!\*]{6,20}$/;
+        if (!reg2.test(pwd)){
+            alert('密码格式错误');
+            return false;
+        }
+    }
+</script>
+{/block}
+
